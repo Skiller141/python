@@ -7,6 +7,7 @@ tk.iconbitmap('Graphicloads-100-Flat-New.ico')
 
 class Game:
     def __init__(self, master=None):
+        self.test = 'Test'
         self.master = master
         self.x = 1
         self.y = -1
@@ -17,7 +18,6 @@ class Game:
 
         self.widgets_init()
         
-    
     def start_game(self):
         self.events_init()
         self.ball_move()
@@ -47,35 +47,13 @@ class Game:
         self.start_button = tkinter.Button(self.dashboard, width=20, text='Start', command=self.start_game)
         self.start_button.pack()
 
-
         self.rectangle = self.canvas.create_rectangle(200, 480, 300, 490, fill='#eee')
         self.ball = self.canvas.create_oval(240, 460, 260, 480, fill='red')
 
         self.ball_pos = self.canvas.coords(self.ball)
-        self.default_ball_pos = self.canvas.coords(self.ball)
-
         self.dash_pos = self.canvas.coords(self.rectangle)
-        self.default_dash_pos = self.canvas.coords(self.rectangle)
 
-    def events_init(self):
-        self.canvas.bind_all('<KeyPress-Left>', self.dash_move)
-        self.canvas.bind_all('<KeyPress-Right>', self.dash_move)
-        self.canvas.bind_all('<KeyPress-a>', self.dash_move)
-        self.canvas.bind_all('<KeyPress-d>', self.dash_move)
-
-    def dash_move(self, event):
-        self.dash_pos = self.canvas.coords(self.rectangle)
-        if event.keysym == 'Left' or event.keysym == 'a':
-            if self.dash_pos[0] <= 0:
-                self.canvas.move(self.rectangle, 0, 0)
-            else:
-                self.canvas.move(self.rectangle, -5, 0)
-        elif event.keysym == 'Right' or event.keysym == 'd':
-            if self.dash_pos[2] >= int(self.canvas['width']):
-                self.canvas.move(self.rectangle, 0, 0)
-            else:
-                self.canvas.move(self.rectangle, 5, 0)
-    
+class Ball():
     def ball_move(self):
         # print(self.start)
         if self.start == True:
@@ -94,12 +72,40 @@ class Game:
             if self.ball_pos[3] >= self.dash_pos[1] and self.ball_pos[0] <= self.dash_pos[2]:
                 if self.ball_pos[2] >= self.dash_pos[0] and self.ball_pos[3] <= self.dash_pos[3]:
                     self.y = -1
-            
+
             self.canvas.move(self.ball, self.x, self.y)
-            
-        self.canvas.after(10, self.ball_move)   
-   
-game = Game(master=tk)
+
+        self.canvas.after(10, self.ball_move)
+          
+class Paddle():
+    def events_init(self):
+        self.canvas.bind_all('<KeyPress-Left>', self.dash_move)
+        self.canvas.bind_all('<KeyPress-Right>', self.dash_move)
+        self.canvas.bind_all('<KeyPress-a>', self.dash_move)
+        self.canvas.bind_all('<KeyPress-d>', self.dash_move)
+
+    def dash_move(self, event):
+        self.dash_pos = self.canvas.coords(self.rectangle)
+        if event.keysym == 'Left' or event.keysym == 'a':
+            if self.dash_pos[0] <= 0:
+                self.canvas.move(self.rectangle, 0, 0)
+            else:
+                self.canvas.move(self.rectangle, -5, 0)
+        elif event.keysym == 'Right' or event.keysym == 'd':
+            if self.dash_pos[2] >= int(self.canvas['width']):
+                self.canvas.move(self.rectangle, 0, 0)
+            else:
+                self.canvas.move(self.rectangle, 5, 0)
+
+class Dashboard(Game):
+    pass
+
+# game = Game(master=tk)
+ball = Ball()
+# paddle = Paddle()
+ 
+
+# ball.out()
 # game.widgets_init()
 # game.events_init()
 # game.ball_move()
