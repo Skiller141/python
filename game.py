@@ -3,29 +3,40 @@ from tkinter.messagebox import showerror
 
 tk = tkinter.Tk()
 tk.title('Canvas')
+tk.iconbitmap('Graphicloads-100-Flat-New.ico')
 
 class Game:
     def __init__(self, master=None):
-        self.test = 'Test'
         self.master = master
         self.x = 1
         self.y = -1
-        self.stop = True
-
+        self.start = False
+        if self.start == True:
+            self.start_game()
         self.i = 0
 
         self.widgets_init()
-        self.events_init()
-        self.ball_move()
+        
     
     def start_game(self):
+        self.events_init()
+        self.ball_move()
         self.i += 1
         if self.i % 2 == 0:
-            self.stop = True
+            self.start = False
             self.start_button['text'] = 'Start'
         else:
-            self.stop = False
+            self.start = True
             self.start_button['text'] = 'Pause'
+
+    def game_over(self):
+        print('END')
+        showerror('Game Over!', 'Game Over!')
+        self.canvas.pack_forget()
+        self.dashboard.pack_forget()
+        self.widgets_init()
+        self.start = False
+        self.i = 0
 
     def widgets_init(self):
         self.canvas = tkinter.Canvas(self.master, width=500, height=500, bg='#333')
@@ -66,15 +77,14 @@ class Game:
                 self.canvas.move(self.rectangle, 5, 0)
     
     def ball_move(self):
-        # print(self.stop)
-        if self.stop == False:
+        # print(self.start)
+        if self.start == True:
             self.ball_pos = self.canvas.coords(self.ball)
             # print(self.ball_pos)
             if self.ball_pos[1] <= 0:
                 self.y = 1
             if self.ball_pos[3] >= int(self.canvas['height']):
-                print('END')
-                showerror('Game Over!', 'Game Over!')
+                self.game_over()
                 return False
             if self.ball_pos[0] <= 0:
                 self.x = 1
