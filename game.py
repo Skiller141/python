@@ -16,11 +16,12 @@ class Game:
         self.i = 0
 
         self.widgets_init()
-        
-    
-    def start_game(self):
         self.events_init()
         self.ball_move()
+        
+    def start_game(self):
+        # self.events_init()
+        # self.ball_move()
         self.i += 1
         if self.i % 2 == 0:
             self.start = False
@@ -47,15 +48,11 @@ class Game:
         self.start_button = tkinter.Button(self.dashboard, width=20, text='Start', command=self.start_game)
         self.start_button.pack()
 
-
         self.rectangle = self.canvas.create_rectangle(200, 480, 300, 490, fill='#eee')
         self.ball = self.canvas.create_oval(240, 460, 260, 480, fill='red')
 
         self.ball_pos = self.canvas.coords(self.ball)
-        self.default_ball_pos = self.canvas.coords(self.ball)
-
         self.dash_pos = self.canvas.coords(self.rectangle)
-        self.default_dash_pos = self.canvas.coords(self.rectangle)
 
     def events_init(self):
         self.canvas.bind_all('<KeyPress-Left>', self.dash_move)
@@ -77,10 +74,8 @@ class Game:
                 self.canvas.move(self.rectangle, 5, 0)
     
     def ball_move(self):
-        # print(self.start)
         if self.start == True:
             self.ball_pos = self.canvas.coords(self.ball)
-            # print(self.ball_pos)
             if self.ball_pos[1] <= 0:
                 self.y = 1
             if self.ball_pos[3] >= int(self.canvas['height']):
