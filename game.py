@@ -7,7 +7,6 @@ tk.iconbitmap('Graphicloads-100-Flat-New.ico')
 
 class Game:
     def __init__(self, master=None):
-        self.test = 'Test'
         self.master = master
         self.x = 1
         self.y = -1
@@ -53,31 +52,6 @@ class Game:
         self.ball_pos = self.canvas.coords(self.ball)
         self.dash_pos = self.canvas.coords(self.rectangle)
 
-class Ball():
-    def ball_move(self):
-        # print(self.start)
-        if self.start == True:
-            self.ball_pos = self.canvas.coords(self.ball)
-            # print(self.ball_pos)
-            if self.ball_pos[1] <= 0:
-                self.y = 1
-            if self.ball_pos[3] >= int(self.canvas['height']):
-                self.game_over()
-                return False
-            if self.ball_pos[0] <= 0:
-                self.x = 1
-            if self.ball_pos[2] >= int(self.canvas['width']):
-                self.x = -1
-
-            if self.ball_pos[3] >= self.dash_pos[1] and self.ball_pos[0] <= self.dash_pos[2]:
-                if self.ball_pos[2] >= self.dash_pos[0] and self.ball_pos[3] <= self.dash_pos[3]:
-                    self.y = -1
-
-            self.canvas.move(self.ball, self.x, self.y)
-
-        self.canvas.after(10, self.ball_move)
-          
-class Paddle():
     def events_init(self):
         self.canvas.bind_all('<KeyPress-Left>', self.dash_move)
         self.canvas.bind_all('<KeyPress-Right>', self.dash_move)
@@ -96,16 +70,31 @@ class Paddle():
                 self.canvas.move(self.rectangle, 0, 0)
             else:
                 self.canvas.move(self.rectangle, 5, 0)
+    
+    def ball_move(self):
+        # print(self.start)
+        if self.start == True:
+            self.ball_pos = self.canvas.coords(self.ball)
+            # print(self.ball_pos)
+            if self.ball_pos[1] <= 0:
+                self.y = 1
+            if self.ball_pos[3] >= int(self.canvas['height']):
+                self.game_over()
+                return False
+            if self.ball_pos[0] <= 0:
+                self.x = 1
+            if self.ball_pos[2] >= int(self.canvas['width']):
+                self.x = -1
 
-class Dashboard(Game):
-    pass
-
-# game = Game(master=tk)
-ball = Ball()
-# paddle = Paddle()
+            if self.ball_pos[3] >= self.dash_pos[1] and self.ball_pos[0] <= self.dash_pos[2]:
+                if self.ball_pos[2] >= self.dash_pos[0] and self.ball_pos[3] <= self.dash_pos[3]:
+                    self.y = -1
+            
+            self.canvas.move(self.ball, self.x, self.y)
+            
+        self.canvas.after(10, self.ball_move)   
  
-
-# ball.out()
+game = Game(master=tk)
 # game.widgets_init()
 # game.events_init()
 # game.ball_move()
