@@ -11,15 +11,12 @@ class Game:
         self.x = 1
         self.y = -1
         self.start = False
-        if self.start == True:
-            self.start_game()
+        
         self.i = 0
 
         self.widgets_init()
         
     def start_game(self):
-        self.events_init()
-        self.ball_move()
         self.i += 1
         if self.i % 2 == 0:
             self.start = False
@@ -27,6 +24,12 @@ class Game:
         else:
             self.start = True
             self.start_button['text'] = 'Pause'
+            self.events_init()
+            self.ball_move()
+
+    def start_game_keypress(self, event):
+        if event.keysym == 'Return' or event.keysym == 'space':
+            self.start_game()
 
     def game_over(self):
         print('END')
@@ -52,30 +55,49 @@ class Game:
         self.ball_pos = self.canvas.coords(self.ball)
         self.dash_pos = self.canvas.coords(self.rectangle)
 
+        x1 = 0
+        y1 = 25
+        x2 = 20
+        y2 = 5
+        for h in range(0, 100):
+            if h == 25 or h == 50 or h == 75:
+                y1 += 22
+                y2 += 22
+                x1 = 0
+                x2 = 20
+            self.canvas.create_rectangle(x1, y1, x2, y2, fill='#ccc')
+            x1 += 20
+            x2 += 20
+
+    def key(self, event):
+        print(event.keysym)
+
     def events_init(self):
         self.canvas.bind_all('<KeyPress-Left>', self.dash_move)
         self.canvas.bind_all('<KeyPress-Right>', self.dash_move)
         self.canvas.bind_all('<KeyPress-a>', self.dash_move)
         self.canvas.bind_all('<KeyPress-d>', self.dash_move)
+        self.canvas.bind_all('<KeyPress-Return>', self.start_game_keypress)
+        self.canvas.bind_all('<KeyPress-space>', self.start_game_keypress)
+        self.canvas.bind_all('<KeyPress>', self.key)
 
     def dash_move(self, event):
-        self.dash_pos = self.canvas.coords(self.rectangle)
-        if event.keysym == 'Left' or event.keysym == 'a':
-            if self.dash_pos[0] <= 0:
-                self.canvas.move(self.rectangle, 0, 0)
-            else:
-                self.canvas.move(self.rectangle, -5, 0)
-        elif event.keysym == 'Right' or event.keysym == 'd':
-            if self.dash_pos[2] >= int(self.canvas['width']):
-                self.canvas.move(self.rectangle, 0, 0)
-            else:
-                self.canvas.move(self.rectangle, 5, 0)
+        if self.start == True:
+            self.dash_pos = self.canvas.coords(self.rectangle)
+            if event.keysym == 'Left' or event.keysym == 'a':
+                if self.dash_pos[0] <= 0:
+                    self.canvas.move(self.rectangle, 0, 0)
+                else:
+                    self.canvas.move(self.rectangle, -5, 0)
+            elif event.keysym == 'Right' or event.keysym == 'd':
+                if self.dash_pos[2] >= int(self.canvas['width']):
+                    self.canvas.move(self.rectangle, 0, 0)
+                else:
+                    self.canvas.move(self.rectangle, 5, 0)
     
     def ball_move(self):
-        # print(self.start)
         if self.start == True:
             self.ball_pos = self.canvas.coords(self.ball)
-            # print(self.ball_pos)
             if self.ball_pos[1] <= 0:
                 self.y = 1
             if self.ball_pos[3] >= int(self.canvas['height']):
@@ -91,9 +113,8 @@ class Game:
                     self.y = -1
             
             self.canvas.move(self.ball, self.x, self.y)
-            
-        self.canvas.after(10, self.ball_move)   
- 
+            self.canvas.after(10, self.ball_move)   
+   
 game = Game(master=tk)
 # game.widgets_init()
 # game.events_init()
