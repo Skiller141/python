@@ -15,7 +15,7 @@ class Game:
         self.i = 0
 
         self.widgets_init()
-        
+
     def start_game(self):
         self.i += 1
         if self.i % 2 == 0:
@@ -59,15 +59,19 @@ class Game:
         y1 = 25
         x2 = 20
         y2 = 5
+
+        self.box_pos = []
         for h in range(0, 100):
             if h == 25 or h == 50 or h == 75:
                 y1 += 22
                 y2 += 22
                 x1 = 0
                 x2 = 20
-            self.canvas.create_rectangle(x1, y1, x2, y2, fill='#ccc')
+            self.box = self.canvas.create_rectangle(x1, y1, x2, y2, fill='#ccc')
             x1 += 20
             x2 += 20
+            self.box_pos.append(self.canvas.coords(self.box))
+        # print(self.box_pos)
 
     def key(self, event):
         print(event.keysym)
@@ -111,7 +115,18 @@ class Game:
             if self.ball_pos[3] >= self.dash_pos[1] and self.ball_pos[0] <= self.dash_pos[2]:
                 if self.ball_pos[2] >= self.dash_pos[0] and self.ball_pos[3] <= self.dash_pos[3]:
                     self.y = -1
-            
+                    
+            for i in range(len(self.box_pos)):
+                if self.ball_pos[2] >= self.box_pos[i][0] and self.ball_pos[1] <= self.box_pos[i][3]:
+                    if self.ball_pos[3] >= self.box_pos[i][1] and self.ball_pos[2] <= self.box_pos[i][2]:
+                        self.y = 1
+                        self.canvas.delete(i+2)
+                        # print(i)
+                        self.box_pos[i][0] = 0
+                        self.box_pos[i][1] = 0
+                        self.box_pos[i][2] = 0
+                        self.box_pos[i][3] = 0
+
             self.canvas.move(self.ball, self.x, self.y)
             self.canvas.after(10, self.ball_move)   
    
